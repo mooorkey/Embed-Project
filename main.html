@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>IV Monitoring and Alert System</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>IV Monitoring and Alert System</h1>
+    </header>
+
+    <div class="info-container">
+      <div class="graph-section">
+        <iframe
+          id="tsgraph"
+          class="ts-graph"
+          src="https://thingspeak.com/channels/2041387/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=20&type=line"
+        ></iframe>
+      </div>
+
+      <div class="info">
+        <div id="date-text" class="date-text"></div>
+        <div id="info-text" class="info-text"></div>
+        <div id="status-text" class="date-text">Status : </div>
+        <button class="hstbtn" id="hstBtn">Show History</button>
+        <a href="#" class="download-btn">Download Data</a>
+        <div id="myModal" class="modal">
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <iframe
+              class="ts-graph-history"
+              src="https://thingspeak.com/channels/2041387/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=100&type=line"
+            ></iframe>
+            <table id="hisTable">
+              <tr>
+                <th>#</th>
+                <th>Date, time</th>
+                <th>Value</th>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function updateTable(data) {
+        const table = document.getElementById("hisTable");
+
+        // Clear existing rows from the table
+        while (table.rows.length > 1) {
+          table.deleteRow(-1);
+        }
+
+        // Populate the table with the updated data
+        for (let i = 0; i < data.length; i++) {
+          const row = table.insertRow(-1);
+          const nCell = row.insertCell(0);
+          const dateCell = row.insertCell(1);
+          const valueCell = row.insertCell(2);
+          const dateValue = new Date(data[i].created_at).toLocaleString(
+            "en-US",
+            { timeZone: "Asia/Bangkok" }
+          );
+          const value = data[i].field1;
+
+          dateCell.innerHTML = dateValue;
+          valueCell.innerHTML = value;
+          nCell.innerHTML = i + 1;
+        }
+      }
+
+      var modal = document.getElementById("myModal");
+      var btn = document.getElementById("hstBtn");
+      var span = document.getElementsByClassName("close")[0];
+
+      btn.onclick = function () {
+        modal.style.display = "block";
+      };
+
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+
+      // ThingSpeak API URL
+      const channelId = "2041387";
+      const readKey = "GXGYM6U7ASYGLRLL";
+      const Nresult = 128;
+
+      const url = `https://api.thingspeak.com/channels/${channelId}/feeds.json?results=${Nresult}`;
+
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+          const field1Value = data.feeds[Nresult - 1].field1;
+          const dateValue = new Date(data.feeds[0].created_at).toLocaleString(
+            "en-US",
+            { timeZone: "Asia/Bangkok" }
+          );
+
+          const infoText = document.querySelector("#info-text");
+          const dateText = document.querySelector("#date-text");
+          const downloadBtn = document.querySelector(".download-btn");
+          const statusText = document.querySelector("#status-text");  
+
+          const jsonData = JSON.stringify(data);
+          const blob = new Blob([jsonData], { type: "application/json" });
+
+          if (field1Value >= 25) {
+            statusText.textContent += "normal";
+          }
+          else {
+            statusText.textContent += "low";
+          }
+
+          // create a download link for the Blob object
+          downloadBtn.href = URL.createObjectURL(blob);
+          downloadBtn.download = "iv_data.json";
+
+          infoText.textContent = `Latest IV reading: ${field1Value}`;
+          dateText.textContent = `Date and time: ${dateValue}`;
+          updateTable(data.feeds);
+        })
+        .catch((error) => console.error(error));
+    </script>
+  </body>
+</html>
