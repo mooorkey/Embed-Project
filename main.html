@@ -21,8 +21,21 @@
       <div class="info">
         <div id="date-text" class="date-text"></div>
         <div id="info-text" class="info-text"></div>
-        <div id="status-text" class="date-text">Status : </div>
+        <div id="status-text" class="date-text">Status :</div>
         <button class="hstbtn" id="hstBtn">Show History</button>
+        <button onclick="openForm()" class="hstbtn" id="popBtn">
+          Show Popup
+        </button>
+        <div class="popup" id="popupForm">
+          <div class="popup-container">
+            <div id="popup-navbar" class="popup-navbar">
+              <button onclick="closeForm()" class="hstBtn">close</button>
+            </div>
+            <div class="popup-content" style="color: aliceblue;">
+              <div class="alert-box">Alert!!!</div>
+            </div>
+          </div>
+        </div>
         <a href="#" class="download-btn">Download Data</a>
         <div id="myModal" class="modal">
           <div class="modal-content">
@@ -70,9 +83,20 @@
         }
       }
 
+      const form = document.getElementById("popupForm");
+      const popup = document.getElementById("popup");
+      function openForm() {
+        form.style.display = "block";
+      }
+
+      function closeForm() {
+        form.style.display = "none";
+      }
+
       var modal = document.getElementById("myModal");
       var btn = document.getElementById("hstBtn");
       var span = document.getElementsByClassName("close")[0];
+      var pbtn = document.getElementById("popBtn");
 
       btn.onclick = function () {
         modal.style.display = "block";
@@ -107,15 +131,14 @@
           const infoText = document.querySelector("#info-text");
           const dateText = document.querySelector("#date-text");
           const downloadBtn = document.querySelector(".download-btn");
-          const statusText = document.querySelector("#status-text");  
+          const statusText = document.querySelector("#status-text");
 
           const jsonData = JSON.stringify(data);
           const blob = new Blob([jsonData], { type: "application/json" });
 
           if (field1Value >= 25) {
             statusText.textContent += "normal";
-          }
-          else {
+          } else {
             statusText.textContent += "low";
           }
 
