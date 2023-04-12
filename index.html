@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>IV Monitoring and Alert System</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>IV Monitoring and Alert System</h1>
+    </header>
+    <div class="info-container" id="info-container">
+      <div class="name-section" id="name-section">
+        <label for="name" contenteditable="true" class="nameText">Patience #1</label>
+      </div>
+      <div class="info-section" id="info-section">
+        <div class="graph-section">
+          <iframe
+            id="tsgraph"
+            class="ts-graph"
+            src="https://thingspeak.com/channels/2041387/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=20&type=line"
+          ></iframe>
+        </div>
+        <div class="info">
+          <div id="date-text" class="info-text"></div>
+          <div id="info-text" class="info-text"></div>  
+          <div id="entry-text" class="info-text"></div>
+          <div id="status-text" class="info-text">Status :</div>
+          <button class="hstbtn" id="hstBtn">Show History</button>
+          <button onclick="openForm()" class="hstbtn" id="popBtn">
+            Show Popup
+          </button>
+
+          <button onclick="openForm2()" class="hstbtn" id="popBtn">
+            Show Popup2
+          </button>
+  
+          <div class="popup" id="popupForm">
+            <div class="popup-container">
+              <div id="popup-navbar" class="popup-navbar">
+                <button id="showHistBtn" onclick="closeForm()" class="hstBtn">
+                  close
+                </button>
+              </div>
+              <div class="popup-content" style="color: aliceblue">
+                <div class="alert-box">Alert!!!</div>
+              </div>
+            </div>
+          </div>
+  
+          <a href="#" class="download-btn">Download Data</a>
+  
+          <div id="myModal" class="modal">
+            <div class="modal-content">
+              <div class="modal-nav-bar">
+                <span class="close">&times;</span>
+              </div>
+              <div class="modal-nav-bar">
+                <label style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif ;" for="entry">Entry</label>
+                <input type="number" class="entryInput" name="entryInput" id="entryInput" value="5" required/>
+                <button class="hstbtn" id="submitButton">Submit</button>
+              </div>
+              <iframe id="history-iframe" class="ts-graph-history"></iframe>
+              <table id="hisTable">
+                <tr>
+                  <th>#</th>
+                  <th>Date, time</th>
+                  <th>Value</th>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cover-popup" id="cover-popup">
+      <div class="modal-nav-bar">
+        <span onclick="cover_close()" class="cover-close" id="cover-popup-close">&times;</span>
+      </div>
+      <!-- <p>This is the overlapped div.</p> -->
+      <div class="popup-content" style="color: aliceblue">
+        <div class="alert-box">Alert!!!</div>
+        <button class="hstbtn">Turn off buzzer</button>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

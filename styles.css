@@ -10,6 +10,15 @@ header {
   text-align: center;
 }
 
+.cover-popup {
+  display: none;
+  flex-direction: column;
+  position:absolute;
+  border-radius: 15px;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
 .hstbtn {
   background-color: #ffffff;
   border: none;
@@ -19,6 +28,7 @@ header {
   font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica,
     sans-serif;
   box-shadow: 1px 2px 10px 0px rgba(0, 0, 0, 0.3);
+  margin: 5px;
 }
 
 .popup {
@@ -52,6 +62,10 @@ header {
   justify-content: center;
 }
 
+.entryInput {
+  margin-left: 5px;
+}
+
 .popup-content {
   display: flex;
   flex-direction: column;
@@ -78,7 +92,7 @@ header {
   align-items: center;
   width: 15%;
   height: 15%;
-  background-color: #5ad
+  background-color: #5ad;
 }
 
 .ts-graph {
@@ -111,14 +125,51 @@ header {
 }
 .info-container {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 825px;
   height: 400px;
-  width: 800px;
   margin: 20px auto;
-  margin-top: 20px;
   border-radius: 15px;
   box-shadow: 1px 2px 10px 0px rgba(0, 0, 0, 0.3);
   background: rgb(155, 198, 53);
+  z-index: 1;
 }
+
+.info-section {
+  display: flex;
+}
+
+.name-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
+  padding: 15px;
+  border-radius: 15px 15px;
+  /* border: #000000 1px solid; */
+  box-shadow: 1px 2px 10px 0px rgba(0, 0, 0, 0.3);
+  background-color: #c764648c;
+}
+
+.nameText:hover {
+  cursor: pointer;
+}
+
+.nameText[contenteditable] {
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-weight: bolder;
+}
+
+.nameText[contenteditable]:focus {
+  background-color: rgba(255, 255, 255, 0.3);
+  padding-left: 5px;
+  padding-right: 5px;
+  outline: #5ad;
+}
+
 .info {
   display: flex;
   flex-direction: column;
@@ -130,10 +181,21 @@ header {
 .info-text {
   font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica,
     sans-serif;
+  padding: 5px; /* add padding inside the box */
+  border: 1px solid #000000; /* add a 1px solid border around the box */
+  background-color: rgb(164, 198, 219);
+  border-radius: 5px; /* round the corners of the box */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* add a shadow to the box */
+  margin: 5px;
 }
+
 .date-text {
   font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica,
     sans-serif;
+  padding: 10px; /* add padding inside the box */
+  border: 1px solid #ccc; /* add a 1px solid border around the box */
+  border-radius: 5px; /* round the corners of the box */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* add a shadow to the box */
 }
 .modal {
   display: none; /* Hidden by default */
@@ -165,6 +227,12 @@ header {
   margin-bottom: 10%;
 }
 
+.modal-nav-bar {
+  display: block;
+  width: 100%;
+  padding-bottom: 10px;
+}
+
 /* The Close Button */
 .close {
   color: #aaaaaa;
@@ -175,6 +243,21 @@ header {
 
 .close:hover,
 .close:focus {
+  color: red;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.cover-close {
+  color: #aaaaaa;
+  padding: 15px;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.cover-close:hover,
+.cover-close:focus {
   color: red;
   text-decoration: none;
   cursor: pointer;
