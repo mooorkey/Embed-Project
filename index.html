@@ -3,6 +3,7 @@
   <head>
     <title>IV Monitoring and Alert System</title>
     <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="stylesheet" type="text/css" href="btn.css" />
   </head>
   <body>
     <header>
@@ -10,30 +11,59 @@
     </header>
     <div class="info-container" id="info-container">
       <div class="name-section" id="name-section">
-        <label for="name" contenteditable="true" class="nameText">Patience #1</label>
+        <label for="name" contenteditable="true" class="nameText"
+          >Patience #1</label
+        >
       </div>
       <div class="info-section" id="info-section">
         <div class="graph-section">
-          <iframe
-            id="tsgraph"
-            class="ts-graph"
-            src="https://thingspeak.com/channels/2041387/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=20&type=line"
-          ></iframe>
+          <iframe id="tsgraphWeight" class="ts-graph"></iframe>
+          <iframe id="tsgraphHeartRate" class="ts-graph"></iframe>
         </div>
         <div class="info">
-          <div id="date-text" class="info-text"></div>
-          <div id="info-text" class="info-text"></div>  
-          <div id="entry-text" class="info-text"></div>
-          <div id="status-text" class="info-text">Status :</div>
-          <button class="hstbtn" id="hstBtn">Show History</button>
-          <button onclick="openForm()" class="hstbtn" id="popBtn">
+          <div id="main-info" class="main-info">
+            <div class="weight-box">
+              <div class="main-info-header">IV</div>
+              <div class="main-info-text" id="bigIV">IV Val</div>
+            </div>
+            <div class="weight-box">
+              <div class="main-info-header">HR</div>
+              <div class="main-info-text" id="bigHR">HR Val</div>
+            </div>
+          </div>
+
+          <div class="hr-info-container">
+            <div id="date-text" class="info-text"></div>
+            <div id="info-text" class="info-text"></div>
+            <div id="entry-text" class="info-text"></div>
+          </div>
+
+          <div class="hr-info-container">
+            <div id="hrdate-text" class="info-text" style="background-color: rgb(136, 230, 167);"></div>
+            <div id="hrinfo-text" class="info-text" style="background-color: rgb(136, 230, 167);"></div>
+            <div id="hrentry-text" class="info-text" style="background-color: rgb(136, 230, 167);"></div>
+          </div>
+
+          <div id="status-text" class="info-text" style="background-color: rgb(50, 50, 116);">Status :</div>
+          <div class="hst-nav">
+            <button class="hstbtn" id="iv-hstBtn">Show IV History</button>
+            <button class="hstbtn" id="hr-hstBtn">Show HR History</button>
+          </div>
+          <!-- <button onclick="openForm()" class="hstbtn" id="popBtn">
             Show Popup
           </button>
 
           <button onclick="openForm2()" class="hstbtn" id="popBtn">
             Show Popup2
-          </button>
-  
+          </button> -->
+          <div class="alert-nav">
+            <label class="form-switch">
+              <input type="checkbox" id="acheckbox" />
+              <i></i>
+            </label>
+            <label class="AlertCheck"> alert</label>
+          </div>
+
           <div class="popup" id="popupForm">
             <div class="popup-container">
               <div id="popup-navbar" class="popup-navbar">
@@ -46,18 +76,33 @@
               </div>
             </div>
           </div>
-  
-          <a href="#" class="download-btn">Download Data</a>
-  
           <div id="myModal" class="modal">
             <div class="modal-content">
               <div class="modal-nav-bar">
                 <span class="close">&times;</span>
               </div>
               <div class="modal-nav-bar">
-                <label style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif ;" for="entry">Entry</label>
-                <input type="number" class="entryInput" name="entryInput" id="entryInput" value="5" required/>
+                <label
+                  style="
+                    font-family: 'Lucida Sans', 'Lucida Sans Regular',
+                      'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana,
+                      sans-serif;
+                  "
+                  for="entry"
+                  >Entry</label
+                >
+                <input
+                  type="number"
+                  class="entryInput"
+                  name="entryInput"
+                  id="entryInput"
+                  value="5"
+                  required
+                />
                 <button class="hstbtn" id="submitButton">Submit</button>
+              </div>
+              <div class="modal-nav-bar">
+                <a href="#" class="download-btn">Download Data</a>
               </div>
               <iframe id="history-iframe" class="ts-graph-history"></iframe>
               <table id="hisTable">
@@ -74,7 +119,9 @@
     </div>
     <div class="cover-popup" id="cover-popup">
       <div class="modal-nav-bar">
-        <span onclick="cover_close()" class="cover-close" id="cover-popup-close">&times;</span>
+        <span onclick="cover_close()" class="cover-close" id="cover-popup-close"
+          >&times;</span
+        >
       </div>
       <!-- <p>This is the overlapped div.</p> -->
       <div class="popup-content" style="color: aliceblue">
