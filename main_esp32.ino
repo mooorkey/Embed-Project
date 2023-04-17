@@ -4,9 +4,13 @@
 #include <HTTPClient.h>
 #include "HX711.h"
 #include "MAX30100_PulseOximeter.h"
+#include <HardwareSerial.h>
 
 /* max30100 on d22 and d23 */
+#define MAX30100_ADDRESS 0x57
+#define REPORTING_PERIOD_MS 1000
 PulseOximeter pox;
+uint32_t tsLastReport = 0;
 
 /* connection info */
 const char* ssid = "SAWAT";
@@ -32,6 +36,7 @@ HX711 scale(HX711_DOUT, HX711_SCK);
 void WeightTask(void* parameter) {
   while (1) {
     float data = get_units_kg() * 1000;
+    //Serial2.print(String(data));
     if (data < 0) data = 0;
     //Serial.println("data 1 : " + String(data));
     publishToThingSpeak(mqtt, channelID, 1, data);
@@ -39,24 +44,17 @@ void WeightTask(void* parameter) {
   }
 }
 
-void onBeatDetected() {
-  // Print the pulse and SpO2 readings when a beat is detected
-  Serial.println("Beat Detected!");
-  Serial.print("Heart rate:");
-  float hr = pox.getHeartRate();
-  Serial.print(hr);
-  Serial.print("bpm / SpO2:");
-  Serial.print(pox.getSpO2());
-  Serial.println("%");
-  if (hr) {
-    publishToThingSpeak(mqtt, HRchannelID, 1, hr);
+void SendingA(void* parameter) {
+  while (1) {
+    Serial2.print(String(get_units_kg() * 1000) + "," + String(pox.getHeartRate()));
+    delay(2500);
   }
 }
 
-void HeartRateTask(void* parameter) {
-  while (1) {
-    delay(500);
-  }
+void onBeatDetected() {
+  Serial.println("Beat Detected!");
+  publishToThingSpeak(mqtt, HRchannelID, 1, pox.getHeartRate());
+  Serial.println("Publish!");
 }
 
 void setup() {
@@ -92,22 +90,37 @@ void setup() {
 
   /* init pox */
   if (!pox.begin()) {
-    Serial.println("FAILED");
+    Serial.println("POX Init FAILED");
     for (;;)
       ;
   } else {
-    Serial.println("SUCCESS");
+    Serial.println("POX Init SUCCESS");
   }
-
+  pox.setIRLedCurrent(MAX30100_LED_CURR_7_6MA);
   pox.setOnBeatDetectedCallback(onBeatDetected);
 
+  Serial2.begin(115200, SERIAL_8N1, 3, 1);
+  
   /* create task for reading weight */
   xTaskCreatePinnedToCore(WeightTask, "Weight Task", 2048, NULL, 1, NULL, 0);
-  //xTaskCreatePinnedToCore(HeartRateTask, "HeartRate Task", 2048, NULL, 2, NULL, 1);
+  xTaskCreatePinnedToCore(SendingA, "HeartRate Task", 2048, NULL, 2, NULL, 1);
 }
 
 void loop() {
   pox.update();
+
+  if (millis() - tsLastReport > REPORTING_PERIOD_MS) {
+    Serial.print("Heart rate:");
+    float HR = pox.getHeartRate();
+    Serial.print(HR);
+    Serial.print("bpm / SpO2:");
+    Serial.print(pox.getSpO2());
+    Serial.print("% ");
+    Serial.print("sta:");
+    Serial.println(pox.getRedLedCurrentBias());
+    tsLastReport = millis();
+  }
+  delay(100);
 }
 
 float get_units_kg() {
